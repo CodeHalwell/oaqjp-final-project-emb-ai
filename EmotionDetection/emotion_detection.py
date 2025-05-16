@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def emotion_detector(text_to_analyze: str) -> str:
     url: str = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
     header: dict[str] = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
@@ -21,9 +22,3 @@ def emotion_detector(text_to_analyze: str) -> str:
     
     return json.dumps(result, indent=4)
     
-    
-text_to_analyze: str = "I love this new technology."
-
-response: dict = emotion_detector(text_to_analyze)
-
-print(response)
