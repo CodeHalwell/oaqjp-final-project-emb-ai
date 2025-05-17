@@ -1,7 +1,10 @@
+"""
+Flask server for emotion detection.
+Provides an API endpoint to analyze text for emotions and serves a simple web interface.
+"""
+import json
 from flask import Flask, render_template, request
 from EmotionDetection import emotion_detector
-import json
-import requests
 
 app = Flask(__name__)
 
@@ -12,20 +15,19 @@ def emotion_detector_route():
     Expects a 'textToAnalyze' query parameter.
     """
     text_to_analyze = request.args.get('textToAnalyze')
-    
-    response_json = json.loads(emotion_detector(text_to_analyze))
-
-    # Format the output string as per requirements
+    response_dict = json.loads(emotion_detector(text_to_analyze))
+    if (response_dict['dominant_emotion'] is None and
+        all(value is None for value in response_dict.values())):
+        return "<b>Invalid text! Please try again!</b>"
     output_string = (
         f"For the given statement, the system response is "
-        f"'anger': {response_json['anger']}, "
-        f"'disgust': {response_json['disgust']}, "
-        f"'fear': {response_json['fear']}, "
-        f"'joy': {response_json['joy']} and "
-        f"'sadness': {response_json['sadness']}. "
-        f"The dominant emotion is {response_json['dominant_emotion']}."
+        f"'anger': {response_dict['anger']}, "
+        f"'disgust': {response_dict['disgust']}, "
+        f"'fear': {response_dict['fear']}, "
+        f"'joy': {response_dict['joy']} and "
+        f"'sadness': {response_dict['sadness']}. "
+        f"The dominant emotion is <b>{response_dict['dominant_emotion']}</b>."
     )
-    
     return output_string
 
 @app.route("/")
